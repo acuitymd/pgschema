@@ -5,16 +5,25 @@ export class Printer {
 
   print(tables: Table[]): string {
     const warning = `// This is a generated file. Manual changes will be overwritten.`;
+
     const tableInterfaces = tables.map((table) => {
       return `export interface ${snakeToPascalCase(table.name)} {
 ${table.columns.map((column) => `  ${column.name}: ${column.type};`).join("\n")}
 }`;
     });
+
     const dbInterface = `export interface DB {
 ${tables
-  .map((table) => `  ${table.name}: ${snakeToPascalCase(table.name)};`)
+  .map((table) => {
+    const tableName =
+      table.namespace === "public"
+        ? table.name
+        : `"${table.namespace}.${table.name}"`;
+    return `  ${tableName}: ${snakeToPascalCase(table.name)};`;
+  })
   .join("\n")}
 }`;
+
     return [warning, ...tableInterfaces, dbInterface].join("\n\n");
   }
 }

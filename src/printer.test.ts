@@ -39,7 +39,7 @@ export interface TableTwo {
 
 export interface DB {
   table_one: TableOne;
-  table_two: TableTwo;
+  "other.table_two": TableTwo;
 }`);
   });
 });
